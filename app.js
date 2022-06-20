@@ -33,14 +33,49 @@ form.addEventListener("submit", (e) => {
         <i class="fas fa-trash"></i>
       </button>
     </div>`;
+
+    //edit item on click
+    const editBtn = element.querySelector(".edit-btn");
+    editBtn.addEventListener("click", (e) => {
+      const element = e.currentTarget.parentElement.parentElement;
+      editElement = e.currentTarget.parentElement.previousElementSibling;
+      //set form value
+      grocery.value = editElement.textContent;
+      //set edit flag
+      editFlag = true;
+      //set edit id
+      editID = element.getAttribute("data-id");
+      //change button text
+      submitBtn.textContent = "Edit";
+    });
+
+    //delete item on click
+    const deleteBtn = element.querySelector(".delete-btn");
+    deleteBtn.addEventListener("click", (e) => {
+      const element = e.currentTarget.parentElement.parentElement;
+      element.remove();
+      if (list.children.length === 0) {
+        container.classList.remove("show-container");
+      }
+      displayAlert("Item deleted.", "danger");
+      //reset form
+      resetForm();
+    });
+
     //append list item to list
     list.appendChild(element);
     //display alert
     displayAlert("Item added to list", "success");
     container.classList.add("show-container");
-    //clear input
-    grocery.value = "";
+    //reset form
+    resetForm();
   } else if (value && editFlag) {
+    //edit item
+    editElement.textContent = value;
+    //display alert
+    displayAlert("Item edited.", "success");
+    //reset form
+    resetForm();
   } else {
     displayAlert("Please enter a grocery item", "danger");
   }
@@ -49,7 +84,7 @@ form.addEventListener("submit", (e) => {
 //clear list
 clearBtn.addEventListener("click", () => {
   list.innerHTML = "";
-  displayAlert("List cleared", "success");
+  displayAlert("List cleared", "danger");
   container.classList.remove("show-container");
 });
 
@@ -61,4 +96,12 @@ function displayAlert(text, action) {
     alert.textContent = "";
     alert.classList.remove(`alert-${action}`);
   }, 2000);
+}
+
+//function to set back to default state
+function resetForm() {
+  grocery.value = "";
+  submitBtn.textContent = "Submit";
+  editFlag = false;
+  editID = "";
 }
